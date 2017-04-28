@@ -1,0 +1,14 @@
+*.so
+*.swp
+*.dll
+*.a
+*.exe
+*.out
+*~
+build
+bin
+doc
+depend
+callgrind*
+vgcore*
+debug*
