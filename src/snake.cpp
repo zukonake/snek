@@ -5,15 +5,15 @@
 #include "snake.hpp"
 
 Snake::Snake( Map &map, Point const &position ) :
-	mMap( map )
+	mMap( map ),
+	mScore( 0 )
 {
 	mBody.push_back( position );
 }
 
-void Snake::move( Direction const &direction )
+void Snake::setDirection( Direction const &direction )
 {
 	mDirection = direction;
-	move();
 }
 
 void Snake::move()
@@ -21,6 +21,7 @@ void Snake::move()
 	mBody.insert( mBody.begin(), mBody[ 0 ]);
 	if( mBody[ 0 ].x == mMap.getApple().x && mBody[ 0 ].y == mMap.getApple().y )
 	{
+		mScore++;
 		mMap.createApple();
 	}
 	else
@@ -72,14 +73,17 @@ void Snake::move()
 				mBody[ 0 ].x++;
 			}
 			break;
+		default:
+			break;
 	}
 }
 
 void Snake::render() const
 {
-	for( auto &i : mBody )
+	mvwaddch( mMap.window, mBody[ 0 ].y + 1, mBody[ 0 ].x + 1, 'O' );
+	for( unsigned int i = 1; i < mBody.size(); i++ )
 	{
-		mvaddch( i.y, i.x, '#' );
+		mvwaddch( mMap.window, mBody[ i ].y + 1, mBody[ i ].x + 1, '#' );
 	}
 }
 
@@ -93,4 +97,9 @@ bool Snake::isDead() const
 		}
 	}
 	return false;
+}
+
+unsigned int const &Snake::getScore() const noexcept
+{
+	return mScore;
 }

@@ -1,4 +1,5 @@
 #include <cstdlib>
+#include <unistd.h>
 #include <ctime>
 //
 #include <curses.h>
@@ -6,46 +7,65 @@
 #include <map.hpp>
 #include <snake.hpp>
 
-Map map({ 20, 20 });
-
-Snake snake( map, { 10, 10 });
 
 int main()
 {
 	srand( time( NULL ));
 	initscr();
-	halfdelay( 2 );
-	while( !snake.isDead())
+	curs_set( 0 );
+	noecho();
+	Map map({ 0, 0 }, { 15, 15 });
+	Snake snake( map, { 12, 12 });
+	Map map2({ 16, 0 }, { 10, 10 });
+	Snake snake2( map2, { 5, 5 });
+	clear();
+	refresh();
+	timeout( 100 );
+	while( !snake.isDead() && !snake2.isDead())
 	{
-		char choice = getch();
-		switch( choice )
+		map.render();
+		snake.render();
+		map2.render();
+		snake2.render();
+		move( map.getSize().y + 2, 0 );
+		//printw( "Score: " );
+		//printw( "%d", snake.getScore());
+		wrefresh( map.window );
+		wrefresh( map2.window );
+		switch( getch())
 		{
 			case 'w':
-				snake.move( UP );
+				snake.setDirection( UP );
+				snake2.setDirection( UP );
 				break;
 			
 			case 'a':
-				snake.move( LEFT );
+				snake.setDirection( LEFT );
+				snake2.setDirection( LEFT );
 				break;
 			
 			case 's':
-				snake.move( DOWN );
+				snake.setDirection( DOWN );
+				snake2.setDirection( DOWN );
 				break;
-			
+				
 			case 'd':
-				snake.move( RIGHT );
+				snake.setDirection( RIGHT );
+				snake2.setDirection( RIGHT );
 				break;
-			
+				
 			default:
-				snake.move();
 				break;
 		}
-		clear();
-		snake.render();
-		map.render();
-		move( 0, 0 );
-		refresh();
+		snake.move();
+		snake2.move();
+		wclear( map.window );
+		wclear( map2.window );
 	}
+	wclear( map.window );
+	printw( "U are ded m8." );
+	refresh();
+	//sleep( 1 );
 	endwin();
 	return 0;
 }

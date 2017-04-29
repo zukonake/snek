@@ -5,16 +5,24 @@
 #include <typedef.hpp>
 #include "map.hpp"
 
-Map::Map( Point const &size ) :
-	mSize( size )
+Map::Map( Point const &position, Point const &size ) :
+	mPosition( position ),
+	mSize( size ),
+	window( newwin( mSize.y + 2 , mSize.x + 2, mPosition.y, mPosition.x ))
 {
 	mApple.x = rand() % size.x;
 	mApple.y = rand() % size.y;
 }
 
+Map::~Map()
+{
+	delwin( window );
+}
+
 void Map::render() const
 {
-	mvaddch( mApple.y, mApple.x, '@' );
+	mvwaddch( window, mApple.y + 1, mApple.x + 1, '@' );
+	box( window, '|', '-' );
 }
 
 void Map::createApple()

@@ -11,14 +11,16 @@ class Snake
 public:
 	Snake( Map &map, Point const &position );
 	
-	void move( Direction const &direction );
+	void setDirection( Direction const &direction );
 	void move();
 	void render() const;
 	bool isDead() const;
+	unsigned int const &getScore() const noexcept;
 private:
 	void eat();
 	
 	std::vector< Segment > mBody;
 	Map &mMap;
 	Direction mDirection;
+	unsigned int mScore;
 };
